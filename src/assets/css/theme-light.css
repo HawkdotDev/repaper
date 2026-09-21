@@ -1840,14 +1840,20 @@
 }
 
 [data-theme='light'] .sidebar-search-result-item {
+  border-radius: 0;
   border-color: transparent;
+  color: #3a3a3c;
 }
 
-[data-theme='light'] .sidebar-search-result-item:hover,
+[data-theme='light'] .sidebar-search-result-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #000000;
+}
+
 [data-theme='light'] .sidebar-search-result-item.selected,
 [data-theme='light'] .sidebar-search-result-item.active {
-  background: #f0f0f2;
-  border-color: #e4e4e7;
+  background: rgba(0, 0, 0, 0.08);
+  color: #000000;
 }
 
 [data-theme='light'] .sidebar-search-result-name {

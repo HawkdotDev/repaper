@@ -2,11 +2,10 @@ import React from 'react'
 import {
   SharpHomeIcon,
   SharpFolderIcon,
-  SharpGraphIcon,
-  SharpSearchIcon
+  SharpGraphIcon
 } from '../../icons/SharpIcons'
 
-export type SidebarSubTab = 'home' | 'folders' | 'search' | 'graph'
+export type SidebarSubTab = 'home' | 'folders' | 'graph'
 
 interface SidebarHeaderProps {
   activeSubTab?: SidebarSubTab
@@ -19,7 +18,7 @@ function SidebarHeader({
 }: SidebarHeaderProps): React.JSX.Element {
   return (
     <div className="sidebar-header-redesign select-none shrink-0">
-      {/* Segmented Switcher: [ Home ] | [ File ] | [ Search ] | [ Graph ] */}
+      {/* Segmented Switcher: [ Home ] | [ File ] | [ Graph ] */}
       <div className="sidebar-segmented-switcher">
         <button
           type="button"
@@ -38,15 +37,6 @@ function SidebarHeader({
         >
           <SharpFolderIcon size={13} />
           <span>File</span>
-        </button>
-        <button
-          type="button"
-          className={`switcher-pill-btn is-search ${activeSubTab === 'search' ? 'active' : ''}`}
-          onClick={(): void => onSelectSubTab?.('search')}
-          title="Search Workspace (Ctrl+Shift+F)"
-        >
-          <SharpSearchIcon size={13} />
-          <span>Search</span>
         </button>
         <button
           type="button"

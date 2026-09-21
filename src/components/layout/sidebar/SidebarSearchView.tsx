@@ -277,13 +277,29 @@ function SidebarSearchViewComponent({
   return (
     <div className="sidebar-search-view flex flex-col flex-1 h-full min-h-0 overflow-hidden">
       {/* Top Search Controls */}
-      <div className="sidebar-search-header p-2 border-b border-white/6 flex flex-col gap-1.5 shrink-0">
+      <div className="sidebar-search-header shrink-0">
+        <div className="flex items-center justify-between mb-0.5">
+          <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+            Workspace Search
+          </span>
+          {onBackToExplorer && (
+            <button
+              type="button"
+              className="text-[10.5px] text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
+              onClick={onBackToExplorer}
+              title="Return to file tree (Esc)"
+            >
+              Done
+            </button>
+          )}
+        </div>
+
         <div className="sidebar-search-wrapper">
           <Search size={13} className="sidebar-search-icon" />
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search files and content..."
+            placeholder="Search notes and content..."
             value={query}
             onChange={(e): void => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -304,7 +320,7 @@ function SidebarSearchViewComponent({
         </div>
 
         {/* Filter Toolbar */}
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between mt-1">
           <button
             type="button"
             className={`sidebar-search-filter-chip ${searchContent ? 'active' : ''}`}
@@ -315,7 +331,7 @@ function SidebarSearchViewComponent({
             <span>Search text</span>
           </button>
 
-          <span className="text-[10.5px] text-zinc-500 font-mono">
+          <span className="text-[10px] text-zinc-500 font-mono">
             {isLoading
               ? 'Indexing...'
               : query.trim()
@@ -326,10 +342,10 @@ function SidebarSearchViewComponent({
       </div>
 
       {/* Results List */}
-      <div className="sidebar-search-results-container flex-1 overflow-y-auto min-h-0 px-2 py-1.5 flex flex-col gap-0.5">
+      <div className="sidebar-search-results-container flex-1 overflow-y-auto min-h-0">
         {matches.length === 0 && !isLoading ? (
           <div className="sidebar-search-empty flex flex-col items-center justify-center p-6 text-center text-zinc-500">
-            <Search size={22} className="text-zinc-600 mb-2" />
+            <Search size={20} className="text-zinc-600 mb-2" />
             <p className="text-xs font-medium text-zinc-400">No matching files found</p>
             <p className="text-[11px] text-zinc-600 mt-1">
               Try searching with another keyword or file name
@@ -388,7 +404,7 @@ function SidebarSearchViewComponent({
 
                   {/* Content snippet previews */}
                   {contentMatches.length > 0 && (
-                    <div className="sidebar-search-snippets flex flex-col gap-1 mt-1 pl-5">
+                    <div className="sidebar-search-snippets">
                       {contentMatches.map((snippet, sIdx) => (
                         <div
                           key={sIdx}
@@ -415,7 +431,7 @@ function SidebarSearchViewComponent({
       </div>
 
       {/* Footer Navigation Tip */}
-      <div className="sidebar-search-footer p-2 border-t border-white/6 flex items-center justify-between text-[10.5px] text-zinc-500 shrink-0">
+      <div className="sidebar-search-footer shrink-0">
         <span className="flex items-center gap-1">
           <Sparkles size={11} className="text-zinc-600" />
           <span>Quick Finder</span>
@@ -423,7 +439,7 @@ function SidebarSearchViewComponent({
         {onBackToExplorer && (
           <button
             type="button"
-            className="hover:text-zinc-300 transition-colors text-zinc-500"
+            className="hover:text-zinc-300 transition-colors text-zinc-500 cursor-pointer"
             onClick={onBackToExplorer}
           >
             Back to Files
