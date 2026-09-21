@@ -152,12 +152,25 @@ function SidebarSearchViewComponent({
 
       if (isCancelled) return
 
-      const results: SearchMatch[] = []
+      const results: Array<SearchMatch & { score: number }> = []
 
       for (const item of items) {
-        const nameMatches = item.name.toLowerCase().includes(q)
-        const pathMatches = item.relPath.toLowerCase().includes(q)
+        const nameLower = item.name.toLowerCase()
+        const titleWithoutExt = nameLower.replace(/\.md$/, '')
+        const relPathLower = item.relPath.toLowerCase()
+
+        let score = 0
         const contentMatches: Array<{ line: number; text: string }> = []
+
+        if (titleWithoutExt === q) {
+          score += 120
+        } else if (titleWithoutExt.startsWith(q)) {
+          score += 85
+        } else if (nameLower.includes(q)) {
+          score += 60
+        } else if (relPathLower.includes(q)) {
+          score += 35
+        }
 
         if (searchContent && item.name.endsWith('.md')) {
           const content = contentCache.current.get(item.path) || ''
@@ -173,17 +186,23 @@ function SidebarSearchViewComponent({
                 if (contentMatches.length >= 3) break // Max 3 snippet previews per file
               }
             }
+            if (contentMatches.length > 0) {
+              score += 25 + contentMatches.length * 5
+            }
           }
         }
 
-        if (nameMatches || pathMatches || contentMatches.length > 0) {
+        if (score > 0) {
           results.push({
             item,
-            nameMatched: nameMatches || pathMatches,
-            contentMatches
+            nameMatched: score >= 35,
+            contentMatches,
+            score
           })
         }
       }
+
+      results.sort((a, b) => b.score - a.score)
 
       if (!isCancelled) {
         setMatches(results)
@@ -371,7 +390,15 @@ function SidebarSearchViewComponent({
                   {contentMatches.length > 0 && (
                     <div className="sidebar-search-snippets flex flex-col gap-1 mt-1 pl-5">
                       {contentMatches.map((snippet, sIdx) => (
-                        <div key={sIdx} className="sidebar-search-snippet-line truncate">
+                        <div
+                          key={sIdx}
+                          className="sidebar-search-snippet-line truncate cursor-pointer hover:opacity-100 transition-opacity"
+                          title={`Jump to match at line ${snippet.line}`}
+                          onClick={(e): void => {
+                            e.stopPropagation()
+                            handleSelectFile(item.path)
+                          }}
+                        >
                           <span className="sidebar-search-snippet-ln">L{snippet.line}:</span>
                           <span className="sidebar-search-snippet-text">
                             {highlightText(snippet.text, query)}

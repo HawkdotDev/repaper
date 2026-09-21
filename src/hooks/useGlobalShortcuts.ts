@@ -75,7 +75,7 @@ export function useGlobalShortcuts({
           if (activeFilePath) {
             onCloseActiveTab(activeFilePath)
           }
-        } else if (key === 'p') {
+        } else if (key === 'p' || key === 'k') {
           e.preventDefault()
           if (onToggleQuickSwitcher) {
             onToggleQuickSwitcher()
@@ -84,7 +84,9 @@ export function useGlobalShortcuts({
           }
         } else if (key === 'f') {
           e.preventDefault()
-          if (onToggleFindInDocument) {
+          if (e.shiftKey) {
+            onToggleSearch()
+          } else if (onToggleFindInDocument) {
             onToggleFindInDocument()
           }
         } else if (key === 'd' && e.shiftKey && onToggleVoiceDictation) {

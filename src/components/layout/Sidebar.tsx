@@ -92,18 +92,23 @@ function Sidebar(props: SidebarProps): React.JSX.Element {
   })
 
   const activeSubTab: SidebarSubTab =
-    viewMode === 'graph'
-      ? 'graph'
-      : viewMode === 'editor' && !activeFilePath
-        ? 'home'
-        : 'folders'
+    activeView === 'search'
+      ? 'search'
+      : viewMode === 'graph'
+        ? 'graph'
+        : viewMode === 'editor' && !activeFilePath
+          ? 'home'
+          : 'folders'
 
   const handleSelectSubTab = (tab: SidebarSubTab): void => {
     if (tab === 'home') {
       if (activeView === 'search') onSwitchView('explorer')
       onSwitchToHome()
     } else if (tab === 'graph') {
+      if (activeView === 'search') onSwitchView('explorer')
       onSwitchToGraph()
+    } else if (tab === 'search') {
+      onSwitchView('search')
     } else {
       if (activeView === 'search') onSwitchView('explorer')
       onSwitchToFiles()

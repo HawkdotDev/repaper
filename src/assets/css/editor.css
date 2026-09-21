@@ -2047,6 +2047,7 @@ mark,
 }
 
 /* Document Match Highlights */
+mark.repaper-find-match,
 mark.oink-find-match {
   background: rgba(234, 179, 8, 0.32);
   color: inherit;
@@ -2055,6 +2056,7 @@ mark.oink-find-match {
   outline: 1px solid rgba(234, 179, 8, 0.45);
 }
 
+mark.repaper-find-match--active,
 mark.oink-find-match--active {
   background: #f59e0b !important;
   color: #000000 !important;

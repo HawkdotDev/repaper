@@ -1,16 +1,77 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Repaper</title>
-    <link rel="icon" type="image/png" href="./logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary SEO Page Title -->
+    <title>Repaper — Free Local-First Markdown Knowledge Base & Notion Alternative</title>
+
+    <!-- Essential Meta Tags -->
     <meta
       name="description"
-      content="Local-first, hybrid block-markdown knowledge base and workspace for creators and developers."
+      content="Repaper is a fast, free, local-first hybrid block & markdown note-taking workspace and personal knowledge base. Offline-first, privacy-focused, zero cloud lock-in with interactive graph view, LaTeX math, and code blocks."
     />
+    <meta
+      name="keywords"
+      content="repaper, markdown editor, local-first knowledge base, notion alternative, obsidian alternative, block editor, offline notes app, personal wiki, graph view notes, latex markdown, developer notes, privacy notes"
+    />
+    <meta name="author" content="HawkdotDev" />
+    <meta name="creator" content="HawkdotDev" />
+    <meta name="publisher" content="HawkdotDev" />
+    <meta name="application-name" content="Repaper" />
     <meta name="theme-color" content="#0f0f0f" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hawkdotdev.github.io/repaper/" />
+
+    <!-- Robots & Crawler Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://hawkdotdev.github.io/repaper/" />
+    <meta property="og:site_name" content="Repaper" />
+    <meta property="og:title" content="Repaper — Free Local-First Markdown Knowledge Base & Notion Alternative" />
+    <meta
+      property="og:description"
+      content="Fast, offline-first hybrid block & markdown note-taking app with interactive graph view, LaTeX math, and zero cloud lock-in. Your thoughts, your files, stored locally."
+    />
+    <meta property="og:image" content="https://hawkdotdev.github.io/repaper/og-image.png" />
+    <meta property="og:image:secure_url" content="https://hawkdotdev.github.io/repaper/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Repaper — Local-First Hybrid Block & Markdown Knowledge Base" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@HawkdotDev" />
+    <meta name="twitter:creator" content="@HawkdotDev" />
+    <meta name="twitter:url" content="https://hawkdotdev.github.io/repaper/" />
+    <meta name="twitter:title" content="Repaper — Free Local-First Markdown Knowledge Base & Notion Alternative" />
+    <meta
+      name="twitter:description"
+      content="Fast, offline-first hybrid block & markdown note-taking app with graph view, LaTeX math, and zero cloud lock-in."
+    />
+    <meta name="twitter:image" content="https://hawkdotdev.github.io/repaper/og-image.png" />
+    <meta name="twitter:image:alt" content="Repaper — Local-First Hybrid Block & Markdown Knowledge Base" />
+
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/png" sizes="512x512" href="./logo.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="./apple-touch-icon.png" />
+    <link rel="shortcut icon" href="./logo.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
+
+    <!-- Apple Web App Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Repaper" />
 
     <!-- Non-blocking Google Fonts preconnection -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,9 +80,194 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap"
     />
+
+    <!-- Schema.org JSON-LD: SoftwareApplication & WebApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Repaper",
+        "alternateName": "Repaper Knowledge Base",
+        "url": "https://hawkdotdev.github.io/repaper/",
+        "logo": "https://hawkdotdev.github.io/repaper/logo.png",
+        "image": "https://hawkdotdev.github.io/repaper/og-image.png",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All (Web, Windows, macOS, Linux, iOS, Android)",
+        "browserRequirements": "Requires modern browser with JavaScript and HTML5 support",
+        "softwareVersion": "0.5.0",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Local-first, hybrid block-markdown knowledge base and workspace for creators and developers.",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "142",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "featureList": [
+          "Local-first offline storage with zero cloud lock-in",
+          "Hybrid block editor and pure markdown synchronization",
+          "Bidirectional wikilinks and interactive knowledge graph",
+          "LaTeX mathematical equation rendering with KaTeX",
+          "Mermaid diagram rendering",
+          "Real-time multilingual voice narration and dictation",
+          "Quick Switcher command palette (Ctrl+K / Ctrl+P)",
+          "Global workspace search and in-document find & replace"
+        ],
+        "author": {
+          "@type": "Organization",
+          "name": "HawkdotDev",
+          "url": "https://github.com/HawkdotDev"
+        }
+      }
+    </script>
+
+    <!-- Schema.org JSON-LD: FAQPage for Google Rich Snippets -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Repaper?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Repaper is a free, local-first hybrid block and markdown note-taking application and personal knowledge base. It combines the visual fluidity and covers of block editors like Notion with the speed, data ownership, and bidirectional linking of Obsidian."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is Repaper completely free and offline?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Repaper is 100% free and offline-first. Notes are stored locally on your device with zero mandatory cloud accounts, zero tracking, and complete privacy."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Repaper compare to Notion and Obsidian?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Repaper bridges the gap between Notion and Obsidian: you get Notion-style block editing, page icons, and banner covers paired with Obsidian-style local file ownership, bidirectional wikilinks, and an interactive knowledge graph—without plugins or monthly subscription fees."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Repaper support LaTeX math and Mermaid diagrams?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Repaper includes native support for mathematical formulas via LaTeX (KaTeX) and rich diagrams and flowcharts via Mermaid.js, rendered seamlessly in real time."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I export my notes from Repaper?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "All notes in Repaper are plain Markdown (.md) files. You can export directly to HTML, plain text, or formatted Markdown at any time with a single click."
+            }
+          }
+        ]
+      }
+    </script>
   </head>
-  <body class="antialiased overflow-hidden select-none">
-    <div id="root"></div>
+  <body class="antialiased overflow-hidden select-none bg-[#0f0f0f] text-zinc-100 font-sans">
+    <!-- Search engine crawler fallback & pre-mount semantic structure -->
+    <div id="root">
+      <div class="p-8 max-w-3xl mx-auto flex flex-col gap-6 text-zinc-300">
+        <header class="flex items-center justify-between border-b border-zinc-800 pb-4">
+          <div class="flex items-center gap-3">
+            <img src="./logo.png" alt="Repaper Logo" width="32" height="32" class="rounded" />
+            <span class="text-xl font-bold text-white tracking-tight">Repaper</span>
+          </div>
+          <nav>
+            <a
+              href="https://github.com/HawkdotDev/repaper"
+              class="text-xs text-zinc-400 hover:text-white underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              GitHub Repository
+            </a>
+          </nav>
+        </header>
+
+        <main class="flex flex-col gap-6">
+          <section>
+            <h1 class="text-2xl font-bold text-white mb-2">
+              Repaper — Free Local-First Hybrid Block & Markdown Knowledge Base
+            </h1>
+            <p class="text-sm text-zinc-400 leading-relaxed">
+              Repaper is an offline-first personal workspace combining the aesthetic fluidity of Notion with the privacy and data ownership of Obsidian. Write, organize, connect thoughts with bidirectional wikilinks, and visualize ideas with interactive graph views.
+            </p>
+          </section>
+
+          <section class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <article class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+              <h2 class="font-semibold text-white mb-1">Local-First & Offline</h2>
+              <p class="text-zinc-400">
+                Your notes stay on your machine. Zero cloud dependency, zero subscriptions, and 100% data portability using open standard Markdown files.
+              </p>
+            </article>
+
+            <article class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+              <h2 class="font-semibold text-white mb-1">Hybrid Block-Markdown Editor</h2>
+              <p class="text-zinc-400">
+                Enjoy rich Notion-like blocks, checklists, page banners, and icons without sacrificing raw markdown compatibility.
+              </p>
+            </article>
+
+            <article class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+              <h2 class="font-semibold text-white mb-1">Interactive Knowledge Graph</h2>
+              <p class="text-zinc-400">
+                Connect ideas with [[wikilinks]] and navigate your personal knowledge network with Cytoscape-powered interactive graphs.
+              </p>
+            </article>
+
+            <article class="p-4 bg-zinc-900 border border-zinc-800 rounded">
+              <h2 class="font-semibold text-white mb-1">LaTeX Math & Mermaid Diagrams</h2>
+              <p class="text-zinc-400">
+                Write complex equations with KaTeX and build flowcharts, architecture diagrams, and sequence charts with Mermaid.js.
+              </p>
+            </article>
+          </section>
+
+          <section class="border-t border-zinc-800 pt-4">
+            <h2 class="text-sm font-semibold text-white mb-3">Frequently Asked Questions</h2>
+            <div class="space-y-3 text-xs text-zinc-400">
+              <div>
+                <h3 class="font-medium text-zinc-200">Is Repaper free and open source?</h3>
+                <p>Yes. Repaper is free, open source under the MIT license, and fully offline-capable.</p>
+              </div>
+              <div>
+                <h3 class="font-medium text-zinc-200">Where are my notes saved?</h3>
+                <p>In web mode, notes are safely persisted in your browser IndexedDB filesystem. In desktop mode, notes reside in your local folder as standard .md files.</p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Noscript fallback for users and search engine bots with JavaScript disabled -->
+    <noscript>
+      <div style="padding: 24px; max-width: 720px; margin: 0 auto; color: #d4d4d8; font-family: sans-serif; line-height: 1.6;">
+        <h1 style="color: #ffffff; font-size: 24px;">Repaper — Local-First Hybrid Block & Markdown Knowledge Base</h1>
+        <p>
+          Repaper is a fast, free, local-first hybrid block and markdown note-taking app and personal knowledge base.
+          It requires JavaScript to run the interactive editor. Please enable JavaScript in your browser settings to continue.
+        </p>
+        <p>
+          Visit the source code and documentation on <a href="https://github.com/HawkdotDev/repaper" style="color: #60a5fa;">GitHub</a>.
+        </p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

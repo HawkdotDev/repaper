@@ -876,12 +876,17 @@ function AppLayout(): React.JSX.Element {
         </Suspense>
       )}
 
-      {/* ====== FLOATING QUICK SWITCHER PALETTE (Ctrl + P) ====== */}
+      {/* ====== FLOATING QUICK SWITCHER PALETTE (Ctrl + P / Ctrl + K) ====== */}
       {showQuickSwitcher && (
         <Suspense fallback={null}>
           <QuickSwitcherModal
             isOpen={showQuickSwitcher}
             onClose={(): void => setShowQuickSwitcher(false)}
+            onSelectWithQuery={(filePath, query): void => {
+              void handleFileSelect(filePath)
+              setFindBarInitialQuery(query)
+              setShowFindBar(true)
+            }}
           />
         </Suspense>
       )}

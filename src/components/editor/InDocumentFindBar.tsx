@@ -19,24 +19,39 @@ export function InDocumentFindBar({
 
   const inputRef = useRef<HTMLInputElement>(null)
   const matchesRef = useRef<HTMLElement[]>([])
+  const isSelfMutatingRef = useRef<boolean>(false)
+
+  // Sync initialQuery when it changes (e.g. triggered from search result)
+  useEffect(() => {
+    if (initialQuery) {
+      setQuery(initialQuery)
+    }
+  }, [initialQuery])
 
   // Helper to remove all highlight marks from DOM
   const removeHighlightMarksFromDOM = useCallback((): void => {
     const container = document.querySelector(containerSelector)
     if (!container) return
 
-    const existingMarks = container.querySelectorAll('mark.oink-find-match')
-    existingMarks.forEach((mark) => {
-      const parent = mark.parentNode
-      if (parent) {
-        while (mark.firstChild) {
-          parent.insertBefore(mark.firstChild, mark)
+    isSelfMutatingRef.current = true
+    try {
+      const existingMarks = container.querySelectorAll('mark.repaper-find-match, mark.oink-find-match')
+      existingMarks.forEach((mark) => {
+        const parent = mark.parentNode
+        if (parent) {
+          while (mark.firstChild) {
+            parent.insertBefore(mark.firstChild, mark)
+          }
+          parent.removeChild(mark)
+          parent.normalize()
         }
-        parent.removeChild(mark)
-        parent.normalize()
-      }
-    })
-    matchesRef.current = []
+      })
+    } finally {
+      matchesRef.current = []
+      setTimeout(() => {
+        isSelfMutatingRef.current = false
+      }, 50)
+    }
   }, [containerSelector])
 
   // Perform search and DOM highlighting
@@ -92,45 +107,52 @@ export function InDocumentFindBar({
     const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const regex = new RegExp(escaped, flags)
 
-    textNodes.forEach((node) => {
-      const text = node.nodeValue || ''
-      if (!regex.test(text)) return
-      regex.lastIndex = 0
+    isSelfMutatingRef.current = true
+    try {
+      textNodes.forEach((node) => {
+        const text = node.nodeValue || ''
+        if (!regex.test(text)) return
+        regex.lastIndex = 0
 
-      const fragment = document.createDocumentFragment()
-      let lastIndex = 0
-      let match: RegExpExecArray | null = regex.exec(text)
+        const fragment = document.createDocumentFragment()
+        let lastIndex = 0
+        let match: RegExpExecArray | null = regex.exec(text)
 
-      while (match !== null) {
-        // Text before match
-        if (match.index > lastIndex) {
-          fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)))
+        while (match !== null) {
+          // Text before match
+          if (match.index > lastIndex) {
+            fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)))
+          }
+
+          // Highlight mark
+          const mark = document.createElement('mark')
+          mark.className = 'repaper-find-match oink-find-match'
+          mark.textContent = match[0]
+          fragment.appendChild(mark)
+          createdMarks.push(mark)
+
+          lastIndex = regex.lastIndex
+          match = regex.exec(text)
         }
 
-        // Highlight mark
-        const mark = document.createElement('mark')
-        mark.className = 'oink-find-match'
-        mark.textContent = match[0]
-        fragment.appendChild(mark)
-        createdMarks.push(mark)
+        if (lastIndex < text.length) {
+          fragment.appendChild(document.createTextNode(text.substring(lastIndex)))
+        }
 
-        lastIndex = regex.lastIndex
-        match = regex.exec(text)
-      }
-
-      if (lastIndex < text.length) {
-        fragment.appendChild(document.createTextNode(text.substring(lastIndex)))
-      }
-
-      node.parentNode?.replaceChild(fragment, node)
-    })
+        node.parentNode?.replaceChild(fragment, node)
+      })
+    } finally {
+      setTimeout(() => {
+        isSelfMutatingRef.current = false
+      }, 50)
+    }
 
     matchesRef.current = createdMarks
     setTotalMatches(createdMarks.length)
 
     if (createdMarks.length > 0) {
       setCurrentIndex(0)
-      createdMarks[0].classList.add('oink-find-match--active')
+      createdMarks[0].classList.add('repaper-find-match--active', 'oink-find-match--active')
       createdMarks[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
     } else {
       setCurrentIndex(0)
@@ -144,6 +166,33 @@ export function InDocumentFindBar({
     })
     return () => cancelAnimationFrame(frameId)
   }, [performSearch])
+
+  // MutationObserver to automatically re-scan when document blocks finish mounting
+  useEffect(() => {
+    const container = document.querySelector(containerSelector)
+    if (!container || !query.trim()) return
+
+    let timer: ReturnType<typeof setTimeout> | null = null
+
+    const observer = new MutationObserver(() => {
+      if (isSelfMutatingRef.current) return
+
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(() => {
+        performSearch()
+      }, 120)
+    })
+
+    observer.observe(container, {
+      childList: true,
+      subtree: true
+    })
+
+    return () => {
+      observer.disconnect()
+      if (timer) clearTimeout(timer)
+    }
+  }, [containerSelector, performSearch, query])
 
   // Focus input on mount
   useEffect(() => {
@@ -166,10 +215,10 @@ export function InDocumentFindBar({
 
     marks.forEach((m, i) => {
       if (i === normalizedIndex) {
-        m.classList.add('oink-find-match--active')
+        m.classList.add('repaper-find-match--active', 'oink-find-match--active')
         m.scrollIntoView({ behavior: 'smooth', block: 'center' })
       } else {
-        m.classList.remove('oink-find-match--active')
+        m.classList.remove('repaper-find-match--active', 'oink-find-match--active')
       }
     })
 
@@ -239,7 +288,7 @@ export function InDocumentFindBar({
         {totalMatches > 0
           ? `${currentIndex + 1} of ${totalMatches}`
           : query.trim()
-            ? '0 of 0'
+            ? '0 matches'
             : ''}
       </span>
 

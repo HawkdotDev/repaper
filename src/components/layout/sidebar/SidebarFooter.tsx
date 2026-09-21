@@ -46,7 +46,7 @@ function SidebarFooter({
             type="button"
             className={`sidebar-footer-btn ${activeView === 'search' ? 'active' : ''}`}
             onClick={onToggleSearch}
-            title={activeView === 'search' ? 'Close Search' : 'Search Workspace (Ctrl+P)'}
+            title={activeView === 'search' ? 'Close Search' : 'Search Workspace (Ctrl+Shift+F)'}
             aria-label="Search Workspace"
           >
             <Search size={16} strokeWidth={1.75} />

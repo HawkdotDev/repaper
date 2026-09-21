@@ -171,9 +171,13 @@ function NotionPageHeaderComponent({
               <Minus size={14} strokeWidth={2} />
             </button>
           )}
+          <h1 className="sr-only">
+            {activeFilePath ? activeFilePath.split(/[\\/]/).pop()?.replace(/\.md$/, '') || 'Untitled' : 'Untitled'}
+          </h1>
           <input
             className="document-title-input"
             type="text"
+            aria-label="Note Title"
             disabled={isPageLocked}
             value={
               activeFilePath ? activeFilePath.split(/[\\/]/).pop()?.replace(/\.md$/, '') || '' : ''
