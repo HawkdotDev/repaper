@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import 'tailwindcss';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-app-wrapper: #0E0E11;
+  --bg-primary: #0E0E11;
+  --bg-main: #0E0E11;
+  --bg-sidebar: #0E0E11;
+  --bg-active: #232328;
+  --bg-hover: #1b1b1e;
+  --border-color: #27272a;
+  --text-main: #e4e4e7;
+  --text-muted: #8b8b96;
+  --text-active: #ffffff;
+  --accent-lime: #ffffff;
+  --accent-lime-hover: #f4f4f5;
+  --accent-purple: #8b5cf6;
+  --accent-purple-hover: #a78bfa;
+  --accent-color: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.12);
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --top-header-height: 44px;
+  --action-bar-height: 38px;
+  --tab-bar-height: 38px;
+  --status-bar-height: 24px;
+}
+
+:root[data-theme='light'],
+body.theme-light {
+  --bg-app-wrapper: #f8f9fa;
+  --bg-primary: #ffffff;
+  --bg-main: #ffffff;
+  --bg-sidebar: #f5f5f7;
+  --bg-active: #e5e5ea;
+  --bg-hover: #ebebec;
+  --border-color: #e5e5ea;
+  --text-main: #1c1c1e;
+  --text-muted: #6e6e73;
+  --text-active: #000000;
+  --accent-lime: #1c1c1e;
+  --accent-lime-hover: #2c2c2e;
+  --accent-purple: #7c3aed;
+  --accent-purple-hover: #6d28d9;
+  --accent-color: #1c1c1e;
+  --accent-glow: rgba(0, 0, 0, 0.06);
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+@theme {
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-active: var(--bg-active);
+  --color-bg-hover: var(--bg-hover);
+  --color-border-color: var(--border-color);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-text-active: var(--text-active);
+  --color-accent-color: var(--accent-color);
+  --color-accent-glow: var(--accent-glow);
+  --color-success-color: var(--success-color);
+  --color-danger-color: var(--danger-color);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-app-wrapper, #0E0E11);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ====== CUSTOM MODERN SCROLLBAR STYLING ====== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ====== ZERO BORDER-RADIUS RESET (BUTTONS, TOGGLES, DROPDOWNS) ====== */
+button,
+[role="button"],
+select,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+.action-pill-btn,
+.fixed-sidebar-toggle-btn,
+.window-brand-btn,
+.window-control-btn,
+.titlebar-add-btn,
+.header-action-btn,
+.header-user-avatar,
+.header-icon-btn,
+.header-tab-close,
+.fullscreen-exit-tab-btn,
+.topbar-view-toggle,
+.topbar-view-toggle-btn,
+.sidebar-action-btn,
+.sidebar-toggle-btn,
+.sidebar-search-toggle-btn,
+.floating-sidebar-toggle-btn,
+.sidebar-expand-pill-btn,
+.sidebar-segmented-switcher,
+.switcher-pill-btn,
+.sidebar-workspace-trigger,
+.sidebar-header-icon-btn,
+.sidebar-footer-btn,
+.sidebar-footer-separator,
+.sidebar-search-clear-btn,
+.right-sidebar-btn,
+.right-sidebar-panel,
+.right-sidebar-header,
+.outline-item,
+.outline-level-pill,
+.outline-search-box,
+.outline-empty-icon-wrap,
+.outline-search-clear,
+.outline-footer-stats,
+.sidebar-search-filter-chip,
+.sidebar-search-pill,
+.sidebar-tag-item,
+.sidebar-empty-btn,
+.notion-quick-link-item,
+.notion-quick-link-shortcut,
+.notion-section-add-btn,
+.notion-logout-btn,
+.notion-email-more-btn,
+.notion-menu-item,
+.notion-workspace-row,
+.tree-node-action-btn,
+.tree-node-item,
+.page-action-row,
+.page-action-switch,
+.page-action-switch .switch-knob,
+.settings-toggle,
+.settings-toggle-slider,
+.settings-toggle-slider:before,
+.settings-select,
+.settings-segment-group,
+.settings-segment-btn,
+.settings-checkbox-card,
+.font-chooser-back-btn,
+.font-chooser-item,
+.font-choice-card,
+.custom-stepper-btn,
+.custom-pill-btn,
+.hub-action-btn,
+.hub-back-btn,
+.hub-row-open-btn,
+.hub-modal-btn,
+.hub-folder-dropdown-btn,
+.hub-search-box,
+.trash-btn,
+.graph-btn,
+.graph-toolbar,
+.widget-checkbox,
+.widget-menu-item,
+.widgets-dropdown-menu,
+.view-dropdown-menu,
+.notifications-dropdown-menu,
+.help-dropdown-menu,
+.notion-dropdown-popover,
+.sidebar-workspace-popover,
+.workspace-dropdown-popover,
+.brand-menu-popover,
+.header-brand-popover,
+.breadcrumb-dropdown-popover,
+.emoji-picker-popover,
+.share-dropdown-menu,
+.share-dropdown-item,
+.context-menu-popover,
+.sidebar-context-menu-popover,
+.sidebar-quick-add-menu,
+.quick-add-item,
+.subheader-metrics-menu,
+.options-card-section,
+.page-actions-dropdown-menu,
+.hub-breadcrumbs-popover,
+.hub-popover-item,
+.banner-picker-popover,
+.emoji-picker-action-btn,
+.emoji-picker-btn,
+.dropdown-action-item,
+.sidebar-workspace-add-btn,
+.tree-node-count-pill,
+.exit-fullscreen-floating-btn,
+.mac-dot {
+  border-radius: 0 !important;
+}

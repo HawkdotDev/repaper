@@ -1,0 +1,51 @@
+import { FileNode } from './shared'
+export type { FileNode }
+
+export interface FileSystemAPI {
+  openDirectory(): Promise<{ path: string; name: string } | null>
+  readDirectory(dirPath: string): Promise<FileNode[]>
+  readFile(filePath: string): Promise<string>
+  exists?(filePath: string): Promise<boolean>
+
+  writeFile(filePath: string, content: string): Promise<void>
+  createFile(parentPath: string, name: string): Promise<string>
+  createFolder(parentPath: string, name: string): Promise<string>
+  deletePath(itemPath: string): Promise<void>
+  renamePath(oldPath: string, newPath: string): Promise<void>
+  showItemInFolder(fullPath: string): Promise<boolean>
+  showSaveDialog(defaultName: string): Promise<string | null>
+  saveAttachment(workspacePath: string, fileName: string, dataUrl: string): Promise<string>
+  watchDirectory(dirPath: string): Promise<void>
+  closeWatcher(): Promise<void>
+  getGraphData(dirPath: string): Promise<{
+    nodes: Array<{ id: string; name: string }>
+    links: Array<{ source: string; target: string }>
+  }>
+  onWorkspaceChanged(
+    callback: (data: {
+      eventType: string
+      filename: string
+      absolutePath: string
+      parentPath: string
+    }) => void
+  ): () => void
+  isLocalDirectory?(): boolean
+}
+
+export interface WindowAPI {
+  minimize(): void
+  maximize(): void
+  close(): void
+  toggleFullScreen(): void
+  isFullScreen(): Promise<boolean>
+  onFullScreenChange?(callback: (isFullScreen: boolean) => void): () => void
+}
+
+declare global {
+  interface Window {
+    api: {
+      fs: FileSystemAPI
+      window: WindowAPI
+    }
+  }
+}

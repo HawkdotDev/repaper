@@ -1,0 +1,246 @@
+# Contributing to Repaper
+
+Thank you for your interest in contributing to **Repaper**! We are building an open, local-first, hybrid block-markdown workspace, and community contributions are essential to making it better for everyone.
+
+Whether you're fixing a bug, designing a new feature, improving documentation, or reporting an issue, your help is warmly welcomed.
+
+## Table of Contents
+
+- [Code of Conduct](#code-of-conduct)
+- [How Can I Contribute?](#how-can-i-contribute)
+- [Reporting Bugs](#reporting-bugs)
+- [Suggesting Enhancements](#suggesting-enhancements)
+- [Improving Documentation](#improving-documentation)
+- [Contributing Code](#contributing-code)
+- [Development Setup](#development-setup)
+- [Prerequisites](#prerequisites)
+- [Local Installation](#local-installation)
+- [Running in Development](#running-in-development)
+- [Project Architecture](#project-architecture)
+- [Coding Standards &amp; Conventions](#coding-standards--conventions)
+- [TypeScript &amp; Type Safety](#typescript--type-safety)
+- [Linting &amp; Formatting](#linting--formatting)
+- [Styling &amp; UI Aesthetics](#styling--ui-aesthetics)
+- [Commit Message Guidelines](#commit-message-guidelines)
+- [Pull Request Workflow](#pull-request-workflow)
+- [Building &amp; Packaging](#building--packaging)
+
+## Code of Conduct
+
+We are committed to providing a welcoming, inclusive, and harassment-free environment for all contributors. Please be respectful, constructive, and collaborative in all discussions and interactions.
+
+## How Can I Contribute?
+
+### Reporting Bugs
+
+If you find a bug or unexpected behavior:
+
+1. **Check Existing Issues**: Search the [GitHub Issues](https://github.com/HawkdotDev/repaper/issues) to verify if the issue has already been reported.
+2. **Open a Detailed Issue**: If not, create a new issue using a descriptive title and include:
+
+- Operating System and version (e.g., Windows 11, macOS Sequoia, Ubuntu 24.04).
+- Repaper version or commit SHA.
+- Clear, step-by-step instructions to reproduce the bug.
+- Expected behavior vs. actual behavior.
+- Screenshots, screen recordings, or error logs from the Developer Tools console (`Ctrl+Shift+I` or `Cmd+Option+I`).
+
+### Suggesting Enhancements
+
+Feature requests are always welcome! When suggesting a feature:
+
+- Explain **why** the feature is valuable and what problem it solves.
+- Describe how you envision the user experience and interface working.
+- Keep in mind Repaper's core principles: **local-first privacy**, **plain-text portability**, and **high performance**.
+
+### Improving Documentation
+
+Documentation improvements (fixing typos, clarifying setup instructions, adding code examples, or expanding guides) are great first-time contributions.
+
+### Contributing Code
+
+Ready to submit code? Look for issues tagged `good first issue` or `help wanted` to get started.
+
+## Development Setup
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- **Node.js**: `&gt;= 20.0.0`
+- **Package Manager**: `npm`, `bun`, or `pnpm`
+- **Git**: `&gt;= 2.30`
+
+### Local Installation
+
+1. **Fork the repository** on GitHub: [https://github.com/HawkdotDev/repaper](https://github.com/HawkdotDev/repaper)
+2. **Clone your fork**:
+
+```bash
+   git clone https://github.com/<your-username>/repaper.git
+   cd repaper
+```
+
+1. **Add upstream remote**:
+
+```bash
+   git remote add upstream https://github.com/HawkdotDev/repaper.git
+```
+
+1. **Install dependencies**:
+
+```bash
+   npm install
+```
+
+### Running in Development
+
+Start the Electron + Vite development server with Hot Module Replacement (HMR):
+
+```bash
+npm run dev
+```
+
+## Project Architecture
+
+Repaper is structured as a modern, high-performance web application using standard Vite:
+
+```
+repaper/
+├── index.html                  # Root HTML shell
+├── vite.config.ts              # Vite configuration (React, Tailwind CSS 4)
+├── resources/                  # Branding assets and screenshots
+├── src/
+│   └── renderer/
+│       └── src/                # React 19 Client Application
+│           ├── assets/         # CSS tokens, base styles, branding assets
+│           ├── components/     # UI components (Editor, Graph, Sidebar, Modals, Widgets)
+│           ├── hooks/          # Custom React hooks & state persistence
+│           ├── services/       # WebFileSystem (IndexedDB/FSA) and WebWindow services
+│           ├── types/          # Shared TypeScript type definitions
+│           ├── utils/          # Markdown/Frontmatter parser, wikilink extractor, path utils
+│           └── workers/        # Dedicated web workers (graph parsing, async indexing)
+```
+
+- **WebFileSystem (`src/renderer/src/services/webFileSystem.ts`)**: Manages persistent client storage in IndexedDB (`oink_storage`) and integrates the Web File System Access API for local directories.
+- **WebWindow (`src/renderer/src/services/webWindow.ts`)**: Provides browser-native window and full-screen controls.
+- **Client App (`src/renderer/src`)**: Modern React 19 application managing UI components, state, block editing, and graph visualization.
+
+## Coding Standards &amp; Conventions
+
+### TypeScript &amp; Type Safety
+
+- Use strict TypeScript everywhere. Avoid `any` types wherever possible.
+- Run typechecks across all build targets before committing:
+
+```bash
+  npm run typecheck
+```
+
+_(Runs both `npm run typecheck:node` and `npm run typecheck:web`)_
+
+### Linting &amp; Formatting
+
+- Maintain code style by running ESLint and Prettier:
+
+```bash
+  # Check for lint issues
+  npm run lint
+
+  # Automatically fix lint issues
+  npm run lint:fix
+
+  # Format all files
+  npm run format
+
+  # Verify formatting without modifying files
+  npm run format:check
+```
+
+### Styling &amp; UI Aesthetics
+
+- Repaper uses a modern Brutalist dark-mode design system with Tailwind CSS 4 and scoped CSS variables.
+- Keep UI responsive, clean, and accessible. Use Lucide icons (`lucide-react`) for UI iconography.
+- Avoid introducing unnecessary heavy external dependencies.
+
+## Commit Message Guidelines
+
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>(<scope>): <subject>
+```
+
+### Common Types
+
+- `feat`: A new feature or capability
+- `fix`: A bug fix
+- `docs`: Documentation changes only
+- `style`: Changes that do not affect the meaning of the code (formatting, whitespace, etc.)
+- `refactor`: Code changes that neither fix a bug nor add a feature
+- `perf`: Performance improvements
+- `test`: Adding or correcting tests
+- `chore`: Build tasks, dependency updates, configuration changes
+
+### Examples
+
+- `feat(graph): add physics dampening toggle for large node graphs`
+- `fix(editor): resolve markdown frontmatter serialization glitch`
+- `docs: update setup instructions in CONTRIBUTING.md`
+
+## Pull Request Workflow
+
+1. **Create a descriptive branch**:
+
+```bash
+   git checkout -b feat/my-new-feature
+```
+
+1. **Make your changes** and test thoroughly locally.
+2. **Validate code quality**:
+
+```bash
+   npm run typecheck
+   npm run lint
+   npm run format:check
+```
+
+1. **Commit your changes**:
+
+```bash
+   git commit -m "feat(editor): add new inline callout block"
+```
+
+1. **Push to your fork**:
+
+```bash
+   git push origin feat/my-new-feature
+```
+
+1. **Submit a Pull Request** targeting the `main` branch of `HawkdotDev/repaper`.
+2. **Fill out the PR description** detailing what changes were made, why, and any screenshots or testing verification steps.
+
+## Building &amp; Packaging
+
+To verify that desktop packaging succeeds on your machine:
+
+```bash
+# Package directory without creating installer (fast verification)
+npm run build:unpack
+
+# Build Windows installer (.exe)
+npm run build:win
+
+# Build macOS package (.dmg / .zip)
+npm run build:mac
+
+# Build Linux package (.AppImage / .deb)
+npm run build:linux
+```
+
+All compiled binaries will be output to the `dist/` directory.
+
+## Questions or Need Help?
+
+Feel free to open an issue or start a discussion on our [GitHub Discussions / Issues](https://github.com/HawkdotDev/repaper/issues).
+
+Thank you for helping build **Repaper**!
