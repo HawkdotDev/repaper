@@ -1,0 +1,11 @@
+# Repaper — Local-First Hybrid Block & Markdown Knowledge Base
+# https://hawkdotdev.github.io/repaper/
+
+User-agent: *
+Allow: /
+Disallow: /scratch/
+Disallow: /private/
+
+# Host & Sitemap specification for search engine crawlers
+Host: https://hawkdotdev.github.io/repaper/
+Sitemap: https://hawkdotdev.github.io/repaper/sitemap.xml
