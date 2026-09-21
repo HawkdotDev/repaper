@@ -95,6 +95,14 @@ export function VoiceDictationBar({
     []
   )
 
+  // Auto-close when user clicks outside the editor area.
+  // The hook handles stopListening internally before calling onFocusLost,
+  // so we only need to cancel interim text and notify the parent to close.
+  const handleFocusLost = useCallback((): void => {
+    cancelLiveInterimText()
+    onClose()
+  }, [onClose])
+
   const {
     isSupported,
     isListening,
@@ -103,17 +111,19 @@ export function VoiceDictationBar({
     scriptMode,
     autoPunctuateCommands,
     detectedLanguage,
+    browserName,
     setLanguage,
     setScriptMode,
     toggleAutoPunctuateCommands,
     error,
     startListening,
-    stopListening
+    stopListening: stopVoice
   } = useVoiceDictation({
     initialLanguage: 'auto',
     initialScriptMode: 'native',
     onSpeechCommit: handleSpeechCommit,
-    onInterimSpeech: handleInterimSpeech
+    onInterimSpeech: handleInterimSpeech,
+    onFocusLost: handleFocusLost
   })
 
   // Track recent punctuation substitution for instant one-click or voice word conversion
@@ -188,14 +198,16 @@ export function VoiceDictationBar({
     }
   }, [autoPunctuateCommands])
 
-  // Start listening automatically on mount
+  // Start listening automatically on mount (only if supported)
   useEffect(() => {
-    void startListening()
+    if (isSupported) {
+      void startListening()
+    }
     return () => {
       cancelLiveInterimText()
-      stopListening()
+      stopVoice()
     }
-  }, [startListening, stopListening])
+  }, [isSupported, startListening, stopVoice])
 
   // Close menus on outside click or Escape
   useEffect(() => {
@@ -212,7 +224,7 @@ export function VoiceDictationBar({
           setShowLanguages(false)
         } else {
           cancelLiveInterimText()
-          stopListening()
+          stopVoice()
           onClose()
         }
       }
@@ -224,13 +236,13 @@ export function VoiceDictationBar({
       document.removeEventListener('mousedown', handleOutsideClick)
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [onClose, showLanguages, stopListening])
+  }, [onClose, showLanguages, stopVoice])
 
   // Start / Stop toggle
   const handleMicToggle = (): void => {
     if (isListening) {
       cancelLiveInterimText()
-      stopListening()
+      stopVoice()
     } else {
       void startListening()
     }
@@ -413,7 +425,9 @@ export function VoiceDictationBar({
             <span className="voice-status-error truncate">{error}</span>
           ) : !isSupported ? (
             <span className="voice-status-error truncate">
-              Speech recognition requires Chrome, Edge, or Safari.
+              {browserName === 'firefox'
+                ? 'Firefox does not support speech recognition. Use Chrome or Edge.'
+                : 'Speech recognition requires Chrome, Edge, or Safari.'}
             </span>
           ) : !isListening ? (
             <span className="voice-status-label text-zinc-500">Narration Stopped</span>
@@ -447,7 +461,7 @@ export function VoiceDictationBar({
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => {
           cancelLiveInterimText()
-          stopListening()
+          stopVoice()
           onClose()
         }}
         title="Stop narration (Esc)"

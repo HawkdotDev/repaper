@@ -43,6 +43,20 @@ declare global {
   }
 }
 
+/**
+ * Detects the user's browser name for targeted compatibility messages.
+ */
+function detectBrowserName(): string {
+  if (typeof navigator === 'undefined') return 'unknown'
+  const ua = navigator.userAgent
+  if (/firefox/i.test(ua)) return 'firefox'
+  if (/edg/i.test(ua)) return 'edge'
+  if (/opr|opera/i.test(ua)) return 'opera'
+  if (/chrome|chromium|crios/i.test(ua)) return 'chrome'
+  if (/safari/i.test(ua)) return 'safari'
+  return 'unknown'
+}
+
 export type ScriptOutputMode = 'native' | 'romanized'
 
 export interface UseVoiceDictationOptions {
@@ -56,6 +70,8 @@ export interface UseVoiceDictationOptions {
     substitutions?: PunctuationSubstitution[]
   ) => void
   onInterimSpeech?: (interimText: string) => void
+  /** Called when user clicks outside the editor area. Parent should close the bar. */
+  onFocusLost?: () => void
 }
 
 export interface UseVoiceDictationReturn {
@@ -68,6 +84,7 @@ export interface UseVoiceDictationReturn {
   scriptMode: ScriptOutputMode
   autoPunctuateCommands: boolean
   detectedLanguage: 'en' | 'hi' | 'bn'
+  browserName: string
   setLanguage: (lang: string) => void
   setScriptMode: (mode: ScriptOutputMode) => void
   toggleScriptMode: () => void
@@ -101,8 +118,10 @@ export function useVoiceDictation({
   autoCapitalize = true,
   autoPunctuateCommands: initialAutoPunctuateCommands = true,
   onSpeechCommit,
-  onInterimSpeech
+  onInterimSpeech,
+  onFocusLost
 }: UseVoiceDictationOptions = {}): UseVoiceDictationReturn {
+  const [browserName] = useState(() => detectBrowserName())
   const [isSupported] = useState(
     () => typeof window !== 'undefined' && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
   )
@@ -128,6 +147,9 @@ export function useVoiceDictation({
   const restartTimerRef = useRef<number | null>(null)
   const isStartingRef = useRef(false)
   const startSessionRef = useRef<(() => void) | null>(null)
+  const watchdogTimerRef = useRef<number | null>(null)
+  const lastResultTimeRef = useRef<number>(0)
+  const onFocusLostRef = useRef(onFocusLost)
 
   const setScriptMode = useCallback((mode: ScriptOutputMode): void => {
     setScriptModeState(mode)
@@ -165,6 +187,10 @@ export function useVoiceDictation({
   useEffect(() => {
     onInterimSpeechRef.current = onInterimSpeech
   }, [onInterimSpeech])
+
+  useEffect(() => {
+    onFocusLostRef.current = onFocusLost
+  }, [onFocusLost])
 
   const consecutiveErrorsRef = useRef(0)
 
@@ -252,6 +278,8 @@ export function useVoiceDictation({
       clearTimeout(restartTimerRef.current)
       restartTimerRef.current = null
     }
+    // Always reset isStartingRef to prevent stuck states
+    isStartingRef.current = false
     if (recognitionRef.current) {
       const rec = recognitionRef.current
       rec.onstart = null
@@ -272,6 +300,14 @@ export function useVoiceDictation({
     }
   }, [])
 
+  // Stop the watchdog heartbeat timer
+  const stopWatchdog = useCallback((): void => {
+    if (watchdogTimerRef.current) {
+      clearInterval(watchdogTimerRef.current)
+      watchdogTimerRef.current = null
+    }
+  }, [])
+
   // Clean stop helper
   const stopListening = useCallback((): void => {
     isListeningRef.current = false
@@ -281,9 +317,10 @@ export function useVoiceDictation({
     setIsPaused(false)
     setInterimTranscript('')
 
+    stopWatchdog()
     cleanupRecognitionInstance()
     stopAudioAnalyzer()
-  }, [cleanupRecognitionInstance, stopAudioAnalyzer])
+  }, [cleanupRecognitionInstance, stopAudioAnalyzer, stopWatchdog])
 
   // Pause listening
   const pauseListening = useCallback((): void => {
@@ -301,6 +338,10 @@ export function useVoiceDictation({
   }, [])
 
   // Instantiates a FRESH SpeechRecognition session (never reuses an ended instance)
+  // Uses non-continuous (single-shot) mode with auto-restart for maximum reliability
+  // across browsers. Each utterance produces a final result, then onend fires, and
+  // we immediately spin up a fresh instance. This avoids the Chrome bug where
+  // continuous mode silently stops producing results after extended listening.
   const startSession = useCallback((): void => {
     if (!isListeningRef.current || isPausedRef.current) return
 
@@ -310,7 +351,10 @@ export function useVoiceDictation({
     cleanupRecognitionInstance()
 
     const recognition = new SpeechAPI()
-    recognition.continuous = true
+    // NON-CONTINUOUS mode: more reliable, produces final results per utterance,
+    // then onend fires and we restart. This is significantly more consistent
+    // than continuous mode which can silently stall.
+    recognition.continuous = false
     recognition.interimResults = true
     recognition.maxAlternatives = 1
 
@@ -321,6 +365,7 @@ export function useVoiceDictation({
     recognition.onstart = (): void => {
       isStartingRef.current = false
       consecutiveErrorsRef.current = 0
+      lastResultTimeRef.current = Date.now()
       if (isListeningRef.current) {
         setIsListening(true)
         setIsPaused(false)
@@ -330,6 +375,7 @@ export function useVoiceDictation({
     recognition.onresult = (event: SpeechRecognitionEvent): void => {
       if (isPausedRef.current) return
       consecutiveErrorsRef.current = 0
+      lastResultTimeRef.current = Date.now()
 
       let liveInterim = ''
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -434,13 +480,15 @@ export function useVoiceDictation({
 
     recognition.onend = (): void => {
       isStartingRef.current = false
-      // Auto-restart with a FRESH instance if user is still in listening mode
+      // Auto-restart with a FRESH instance if user is still in listening mode.
+      // In non-continuous mode, onend fires after every utterance or silence timeout,
+      // so we always restart immediately to keep listening.
       if (isListeningRef.current && !isPausedRef.current) {
         cleanupRecognitionInstance()
         const delay =
           consecutiveErrorsRef.current > 0
             ? Math.min(3000, 400 * Math.pow(1.5, consecutiveErrorsRef.current))
-            : 50
+            : 80
         restartTimerRef.current = window.setTimeout(() => {
           if (isListeningRef.current && !isPausedRef.current) {
             startSessionRef.current?.()
@@ -454,10 +502,9 @@ export function useVoiceDictation({
     recognitionRef.current = recognition
 
     try {
-      if (!isStartingRef.current) {
-        isStartingRef.current = true
-        recognition.start()
-      }
+      // Force-reset isStartingRef before every start attempt to prevent stuck states
+      isStartingRef.current = true
+      recognition.start()
     } catch (err) {
       isStartingRef.current = false
       console.warn('Recognition start exception, retrying:', err)
@@ -465,7 +512,7 @@ export function useVoiceDictation({
         if (isListeningRef.current && !isPausedRef.current) {
           startSessionRef.current?.()
         }
-      }, 150)
+      }, 200)
     }
   }, [autoCapitalize, cleanupRecognitionInstance, setScriptMode, stopListening])
 
@@ -473,11 +520,39 @@ export function useVoiceDictation({
     startSessionRef.current = startSession
   }, [startSession])
 
+  // Watchdog heartbeat: periodically checks if the recognition session is alive.
+  // If no result (interim or final) has been received in 15 seconds while listening,
+  // force-restart the session to recover from silent stalls.
+  const startWatchdog = useCallback((): void => {
+    stopWatchdog()
+    lastResultTimeRef.current = Date.now()
+    watchdogTimerRef.current = window.setInterval(() => {
+      if (!isListeningRef.current || isPausedRef.current) return
+      const elapsed = Date.now() - lastResultTimeRef.current
+      // 15 seconds without any result → force restart
+      if (elapsed > 15000) {
+        console.warn('Voice recognition watchdog: no results for 15s, restarting session')
+        lastResultTimeRef.current = Date.now()
+        cleanupRecognitionInstance()
+        restartTimerRef.current = window.setTimeout(() => {
+          if (isListeningRef.current && !isPausedRef.current) {
+            startSessionRef.current?.()
+          }
+        }, 100)
+      }
+    }, 5000)
+  }, [cleanupRecognitionInstance, stopWatchdog])
+
   // Master start function (Non-blocking audio analyzer startup for zero delay!)
   const startListening = useCallback(async (): Promise<void> => {
     const SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechAPI) {
-      setError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.')
+      const browser = detectBrowserName()
+      if (browser === 'firefox') {
+        setError('Firefox does not support speech recognition. Please use Chrome or Edge.')
+      } else {
+        setError('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.')
+      }
       return
     }
 
@@ -490,9 +565,12 @@ export function useVoiceDictation({
     // Start recognition session immediately
     startSession()
 
+    // Start watchdog heartbeat to detect stalled sessions
+    startWatchdog()
+
     // Start audio visualizer non-blockingly in background
     void startAudioAnalyzer()
-  }, [startAudioAnalyzer, startSession])
+  }, [startAudioAnalyzer, startSession, startWatchdog])
 
   // Dynamic language switching
   const setLanguage = useCallback((newLang: string): void => {
@@ -521,14 +599,55 @@ export function useVoiceDictation({
     }
   }, [startListening, stopListening])
 
+  // Click-outside-editor detection: when user clicks anywhere outside the editor
+  // content area and the voice bar itself, auto-stop voice dictation
+  useEffect(() => {
+    if (!isListening) return
+
+    const handleDocumentMousedown = (e: MouseEvent): void => {
+      const target = e.target as HTMLElement
+      if (!target) return
+
+      // Don't stop if clicking inside the editor content area
+      const editorContainer = document.querySelector('#editorjs-container')
+      if (editorContainer && editorContainer.contains(target)) return
+
+      // Don't stop if clicking inside the editor-wrapper (covers header, find bar, etc.)
+      const editorWrapper = target.closest('.editor-wrapper')
+      if (editorWrapper) return
+
+      // Don't stop if clicking inside the voice dictation bar itself
+      const voiceBar = target.closest('.voice-dictation-container')
+      if (voiceBar) return
+
+      // Don't stop if clicking the voice dictation toggle button in the SubHeader
+      const voiceBtn = target.closest('.voice-dictate-btn')
+      if (voiceBtn) return
+
+      // Don't stop if clicking inside the editor-container (covers banner, etc.)
+      const editorContainerDiv = target.closest('.editor-container')
+      if (editorContainerDiv) return
+
+      // User clicked outside — stop voice dictation and notify parent
+      stopListening()
+      onFocusLostRef.current?.()
+    }
+
+    document.addEventListener('mousedown', handleDocumentMousedown, true)
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentMousedown, true)
+    }
+  }, [isListening, stopListening])
+
   // Clean up completely on component unmount
   useEffect(() => {
     return () => {
       isListeningRef.current = false
+      stopWatchdog()
       cleanupRecognitionInstance()
       stopAudioAnalyzer()
     }
-  }, [cleanupRecognitionInstance, stopAudioAnalyzer])
+  }, [cleanupRecognitionInstance, stopAudioAnalyzer, stopWatchdog])
 
   return {
     isSupported,
@@ -540,6 +659,7 @@ export function useVoiceDictation({
     scriptMode,
     autoPunctuateCommands,
     detectedLanguage,
+    browserName,
     setLanguage,
     setScriptMode,
     toggleScriptMode,
