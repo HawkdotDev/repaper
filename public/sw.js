@@ -1,5 +1,5 @@
 const CACHE_NAME = 'repaper-cache-v2'
-const STATIC_ASSETS = ['/', '/index.html', '/manifest.webmanifest', '/logo.png']
+const STATIC_ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png']
 
 // 1. Installation: Pre-cache core shell assets
 self.addEventListener('install', (event) => {

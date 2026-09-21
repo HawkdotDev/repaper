@@ -25,7 +25,8 @@ void webFileSystem.init().then(() => {
   // Register Service Worker for offline PWA capabilities
   if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((err) => {
+      const swUrl = new URL('./sw.js', import.meta.url)
+      navigator.serviceWorker.register(swUrl.pathname).catch((err) => {
         console.warn('ServiceWorker registration failed: ', err)
       })
     })
