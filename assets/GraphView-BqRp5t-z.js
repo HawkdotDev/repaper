@@ -1,0 +1,1 @@
+import{R as n,j as o}from"./vendor-react-CrcNo_vj.js";function s(e){return o.jsx("div",{className:"graph-coming-soon-view",children:o.jsx("span",{className:"graph-coming-soon-text",children:"Coming Soon"})})}const r=n.memo(s);export{r as default};
