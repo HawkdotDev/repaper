@@ -3,13 +3,18 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://hawkdotdev.github.io/repaper/</loc>
-    <lastmod>2026-09-21</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://hawkdotdev.github.io/repaper/og-image.png</image:loc>
-      <image:title>Repaper — Free Local-First Markdown Knowledge Base &amp; Notion Alternative</image:title>
-      <image:caption>Privacy-first offline markdown workspace with interactive graph view, LaTeX, and code blocks.</image:caption>
+      <image:title>Repaper — Paper-Fast Local Note Taking App &amp; Markdown Notes Workspace</image:title>
+      <image:caption>Ultra-fast, offline-first paper note taking app with markdown blocks, interactive knowledge graph, LaTeX math, and zero cloud lock-in.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://hawkdotdev.github.io/repaper/logo.png</image:loc>
+      <image:title>Repaper Note Taking App Icon</image:title>
+      <image:caption>Repaper paper notes app icon and brand mark.</image:caption>
     </image:image>
   </url>
 </urlset>

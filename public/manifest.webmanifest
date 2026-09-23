@@ -1,15 +1,15 @@
 {
-  "name": "Repaper — Local-First Hybrid Block & Markdown Knowledge Base",
-  "short_name": "Repaper",
-  "description": "Fast, private, local-first hybrid block & markdown note-taking workspace with interactive graph view, LaTeX math, and zero cloud lock-in.",
-  "id": "repaper-knowledge-base",
+  "name": "Repaper — Paper-Fast Local Note Taking App & Markdown Notes Workspace",
+  "short_name": "Repaper Note",
+  "description": "Ultra-fast, private, local-first paper-like note taking workspace with interactive graph view, LaTeX math, and zero cloud lock-in.",
+  "id": "repaper-note-workspace",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
   "orientation": "any",
-  "categories": ["productivity", "utilities", "education"],
+  "categories": ["productivity", "utilities", "education", "lifestyle"],
   "icons": [
     {
       "src": "./logo.png",
@@ -35,14 +35,28 @@
       "sizes": "1200x630",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Repaper Workspace & Knowledge Base"
+      "label": "Repaper Note Taking Workspace"
     }
   ],
   "shortcuts": [
     {
       "name": "New Note",
-      "short_name": "New",
+      "short_name": "New Note",
       "description": "Create a new local markdown note",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Search Notes",
+      "short_name": "Search",
+      "description": "Quick Switcher to search all notes",
+      "url": "./",
+      "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Knowledge Graph",
+      "short_name": "Graph",
+      "description": "Visualize your notes knowledge graph",
       "url": "./",
       "icons": [{ "src": "./logo.png", "sizes": "192x192" }]
     }

@@ -1,17 +1,26 @@
 {
-  "name": "Repaper — Local-first Block & Markdown Workspace",
-  "short_name": "Repaper",
-  "description": "Local-first, hybrid block-markdown knowledge base and workspace for creators and developers.",
-  "start_url": "/",
+  "name": "Repaper — Paper-Fast Local Note Taking App & Markdown Notes Workspace",
+  "short_name": "Repaper Note",
+  "description": "Ultra-fast, private, local-first paper-like note taking workspace with interactive graph view, LaTeX math, and zero cloud lock-in.",
+  "id": "repaper-note-workspace",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "education", "lifestyle"],
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "./logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ]
 }

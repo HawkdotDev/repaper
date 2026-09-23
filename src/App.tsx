@@ -175,6 +175,18 @@ function AppLayout(): React.JSX.Element {
     }
   }, [])
 
+  // Dynamic Document Title for SEO, Browser History & Tab Indexing
+  useEffect(() => {
+    if (activeFilePath) {
+      const fileName = activeFilePath.split(/[/\\]/).pop()?.replace(/\.md$/i, '') || 'Note'
+      document.title = `${fileName} — Repaper Note`
+    } else if (viewMode === 'graph') {
+      document.title = 'Knowledge Graph — Repaper Note'
+    } else {
+      document.title = 'Repaper — Paper-Fast Local Note Taking App & Markdown Notes Workspace'
+    }
+  }, [activeFilePath, viewMode])
+
   // Multithreaded Background Indexer
   const { stats: workerStats, headings: workerHeadings } = useIndexerWorker(
     activeFilePath ? fileContents[activeFilePath] : ''

@@ -1,11 +1,43 @@
-# Repaper — Local-First Hybrid Block & Markdown Knowledge Base
-# https://hawkdotdev.github.io/repaper/
+# Repaper — Paper-Fast Local Note Taking App & Markdown Notes Workspace
+# Website: https://hawkdotdev.github.io/repaper/
+# Documentation & Source: https://github.com/HawkdotDev/repaper
 
 User-agent: *
 Allow: /
+Allow: /logo.png
+Allow: /apple-touch-icon.png
+Allow: /og-image.png
+Allow: /og-image.jpg
+Allow: /manifest.webmanifest
+Allow: /sitemap.xml
 Disallow: /scratch/
 Disallow: /private/
 
-# Host & Sitemap specification for search engine crawlers
+# Explicit search crawler definitions
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Canonical Host & Sitemap endpoints
 Host: https://hawkdotdev.github.io/repaper/
 Sitemap: https://hawkdotdev.github.io/repaper/sitemap.xml
